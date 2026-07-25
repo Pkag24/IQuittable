@@ -1,0 +1,39 @@
+csharpusing System;
+
+namespace PolymorphismDemo
+{
+    // Define the IQuittable interface with a void Quit method
+    public interface IQuittable
+    {
+        void Quit();
+    }
+
+    // Employee class inherits from IQuittable and implements Quit()
+    public class Employee : IQuittable
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        // Implement the Quit method required by the interface
+        public void Quit()
+        {
+            // Print a message showing the employee has quit
+            Console.WriteLine($"{FirstName} {LastName} has decided to quit the job.");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Use polymorphism to create an object of type IQuittable pointing to an Employee
+            IQuittable quittingEmployee = new Employee { FirstName = "John", LastName = "Doe" };
+
+            // Call the Quit method on the IQuittable reference type
+            quittingEmployee.Quit();
+
+            // Keep the console open
+            Console.ReadLine();
+        }
+    }
+}
