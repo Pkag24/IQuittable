@@ -1,0 +1,20 @@
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            using (var db = new SchoolContext())
+            {
+                Console.Write("Enter a name for a new student: ");
+                string name = Console.ReadLine();
+
+                var student = new Student { StudentName = name };
+                db.Students.Add(student);
+                db.SaveChanges();
+
+                Console.WriteLine("Successfully added student to the database.");
+                Console.ReadKey();
+            }
+        }
+    }
