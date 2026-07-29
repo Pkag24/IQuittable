@@ -1,0 +1,37 @@
+using Microsoft.AspNetCore.Mvc;
+using YourProjectName.Models; // Replace with your actual namespace
+using System.Linq;
+
+namespace YourProjectName.Controllers
+{
+    public class InsureeController : Controller
+    {
+        // GET: Insurees/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Insuree insuree)
+        {
+            if (ModelState.IsValid)
+            {
+                // 1. Base price
+                decimal quote = 50m;
+
+                // 2. Age calculations
+                int age = DateTime.Today.Year - insuree.DateOfBirth.Year;
+                if (insuree.DateOfBirth.Date > DateTime.Today.AddYears(-age)) age--;
+
+                if (age <= 18)
+                {
+                    quote += 100m;
+                }
+                else if (age >= 19 && age <= 25)
+                {
+                    quote += 50m;
+                }
+                else if (age >= 26)
+                {
