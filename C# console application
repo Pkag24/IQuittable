@@ -1,0 +1,41 @@
+using System;
+
+namespace MethodAssignment
+{
+    // Define a class to house our math logic
+    class MathOperations
+    {
+        // Create a void method (does not return a value) taking two integer parameters
+        public void ProcessNumbers(int firstNumber, int secondNumber)
+        {
+            // Perform a math operation on the first integer (e.g., multiply it by 10)
+            // The result is stored locally but not returned or printed
+            int mathResult = firstNumber * 10;
+
+            // Display the second integer to the screen as requested
+            Console.WriteLine($"The second integer value is: {secondNumber}");
+        }
+    }
+
+    // Main program class containing the entry point of our console app
+    class Program
+    {
+        // Entry point method of the application
+        static void Main(string[] args)
+        {
+            // Instantiate the MathOperations class by creating an object of it
+            MathOperations mathOp = new MathOperations();
+
+            // Call the method, passing in two numbers positional (by order)
+            // 5 maps to firstNumber, and 20 maps to secondNumber
+            mathOp.ProcessNumbers(5, 20);
+
+            // Call the method, explicitly specifying the parameters by their named arguments
+            // This clearly dictates which value goes to which parameter regardless of order
+            mathOp.ProcessNumbers(firstNumber: 8, secondNumber: 45);
+
+            // Keeps the console window open so the developer can inspect the output
+            Console.ReadLine();
+        }
+    }
+}
