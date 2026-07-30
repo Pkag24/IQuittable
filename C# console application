@@ -1,41 +1,70 @@
 using System;
+using System.Data.Entity;
+using System.Linq;
 
-namespace MethodAssignment
+namespace EFCodeFirstConsoleApp
 {
-    // Define a class to house our math logic
-    class MathOperations
+    // 1. Define the Domain Model
+    public class Student
     {
-        // Create a void method (does not return a value) taking two integer parameters
-        public void ProcessNumbers(int firstNumber, int secondNumber)
-        {
-            // Perform a math operation on the first integer (e.g., multiply it by 10)
-            // The result is stored locally but not returned or printed
-            int mathResult = firstNumber * 10;
-
-            // Display the second integer to the screen as requested
-            Console.WriteLine($"The second integer value is: {secondNumber}");
-        }
+        // EF automatically recognizes "StudentID" or "Id" as the Primary Key
+        public int StudentID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime? EnrollmentDate { get; set; }
     }
 
-    // Main program class containing the entry point of our console app
+    // 2. Define the Database Context
+    // The DbContext coordinates EF functionality for our data model
+    public class SchoolContext : DbContext
+    {
+        // By default, EF creates a database named after the fully qualified context class name
+        // (e.g., EFCodeFirstConsoleApp.SchoolContext) on your local .\SQLEXPRESS instance
+        public SchoolContext() : base()
+        {
+        }
+
+        // Each DbSet maps directly to a table in your database
+        public DbSet<Student> Students { get; set; }
+    }
+
+    // 3. Application Execution
     class Program
     {
-        // Entry point method of the application
         static void Main(string[] args)
         {
-            // Instantiate the MathOperations class by creating an object of it
-            MathOperations mathOp = new MathOperations();
+            // Initialize the DbContext within a using statement to guarantee proper resource disposal
+            using (var context = new SchoolContext())
+            {
+                Console.WriteLine("Initializing database and adding a new student...");
 
-            // Call the method, passing in two numbers positional (by order)
-            // 5 maps to firstNumber, and 20 maps to secondNumber
-            mathOp.ProcessNumbers(5, 20);
+                // Create a new Student entity instance
+                var newStudent = new Student
+                {
+                    FirstName = "John",
+                    LastName = "Doe",
+                    EnrollmentDate = DateTime.Now
+                };
 
-            // Call the method, explicitly specifying the parameters by their named arguments
-            // This clearly dictates which value goes to which parameter regardless of order
-            mathOp.ProcessNumbers(firstNumber: 8, secondNumber: 45);
+                // Track the entity for insertion inside the DbContext memory space
+                context.Students.Add(newStudent);
 
-            // Keeps the console window open so the developer can inspect the output
-            Console.ReadLine();
+                // Commit the changes to the physical SQL Server database
+                // EF automatically checks if the database exists; if not, it constructs it on the fly
+                context.SaveChanges();
+
+                Console.WriteLine("Successfully saved student to the database!");
+                
+                // Read and verify the inserted data
+                var savedStudent = context.Students.FirstOrDefault();
+                if (savedStudent != null)
+                {
+                    Console.WriteLine($"\nSaved Student Details:\nID: {savedStudent.StudentID}\nName: {savedStudent.FirstName} {savedStudent.LastName}");
+                }
+            }
+
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
         }
     }
 }
